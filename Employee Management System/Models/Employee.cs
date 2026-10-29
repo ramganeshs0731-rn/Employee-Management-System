@@ -1,28 +1,28 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Employee_Management_System.Models
 {
-    [Index(nameof(Email), IsUnique = true)]
     public class Employee
     {
+        [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Full name is required.")]
-        [StringLength(100)]
+        [Required]
+        [MaxLength(100)]
         public string FullName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Email is required.")]
-        [EmailAddress(ErrorMessage = "Invalid email format.")]
+        [Required]
+        [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Department is required.")]
-        public string Department { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Job title is required.")]
-        public string JobTitle { get; set; } = string.Empty;
-
-        [Range(0.01, double.MaxValue, ErrorMessage = "Salary must be greater than zero.")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Salary { get; set; }
+
+        // Foreign Key
+        public int DepartmentId { get; set; }
+
+        // Navigation property
+        public Department? Department { get; set; }
     }
 }

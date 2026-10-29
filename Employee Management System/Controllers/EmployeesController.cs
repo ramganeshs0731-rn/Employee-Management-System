@@ -18,11 +18,11 @@ namespace Employee_Management_System.Controllers
 
         // GET: api/Employees
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
+        public async Task<IActionResult> GetEmployees()
         {
-            return await _context.Employees.ToListAsync();
+            var employees = await _context.Employees.ToListAsync();
+            return Ok(employees);
         }
-
         // GET: api/Employees/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetEmployee(int id)
