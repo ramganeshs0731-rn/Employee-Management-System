@@ -1,8 +1,13 @@
-﻿using System;
+﻿using Employee_Management_System.Models;
 
-public class Class1
+namespace Employee_Management_System.Repositories
 {
-	public Class1()
-	{
-	}
+    public interface IEmployeeRepository
+    {
+        Task<IEnumerable<Employee>> GetAllAsync();
+        Task<Employee?> GetByIdAsync(int id);
+        Task AddAsync(Employee employee);
+        Task UpdateAsync(Employee employee);
+        Task DeleteAsync(int id);
+    }
 }

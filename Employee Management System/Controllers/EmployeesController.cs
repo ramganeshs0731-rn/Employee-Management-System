@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Employee_Management_System.Data;
-using Employee_Management_System.Models;
+﻿using Employee_Management_System.Models;
+using Employee_Management_System.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Employee_Management_System.Controllers
 {
@@ -9,87 +8,47 @@ namespace Employee_Management_System.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IEmployeeService _employeeService;
 
-        public EmployeesController(ApplicationDbContext context)
+        public EmployeesController(IEmployeeService employeeService)
         {
-            _context = context;
+            _employeeService = employeeService;
         }
 
-        // GET: api/Employees
         [HttpGet]
-        public async Task<IActionResult> GetEmployees()
+        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
-            var employees = await _context.Employees.ToListAsync();
+            var employees = await _employeeService.GetAllEmployeesAsync();
             return Ok(employees);
         }
-        // GET: api/Employees/5
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetEmployee(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-
-            if (employee == null)
-            {
-                return NotFound();
-            }
-
-            return employee;
+            var employee = await _employeeService.GetEmployeeByIdAsync(id);
+            if (employee == null) return NotFound();
+            return Ok(employee);
         }
 
-        // POST: api/Employees
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
+        public async Task<ActionResult<Employee>> CreateEmployee(Employee employee)
         {
-            _context.Employees.Add(employee);
-            await _context.SaveChangesAsync();
-
+            await _employeeService.CreateEmployeeAsync(employee);
             return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, employee);
         }
 
-        // PUT: api/Employees/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployee(int id, Employee employee)
+        public async Task<IActionResult> UpdateEmployee(int id, Employee employee)
         {
-            if (id != employee.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(employee).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.Employees.Any(e => e.Id == id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            if (id != employee.Id) return BadRequest();
+            await _employeeService.UpdateEmployeeAsync(employee);
             return NoContent();
         }
 
-        // DELETE: api/Employees/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
-            {
-                return NotFound();
-            }
-
-            _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();
-
+            await _employeeService.DeleteEmployeeAsync(id);
             return NoContent();
         }
     }
