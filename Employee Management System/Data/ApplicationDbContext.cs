@@ -1,6 +1,6 @@
 ﻿using Employee_Management_System.Models;
 using Microsoft.EntityFrameworkCore;
-
+// Ram the Boss
 namespace Employee_Management_System.Data
 {
     public class ApplicationDbContext : DbContext
@@ -13,3 +13,4 @@ namespace Employee_Management_System.Data
         public DbSet<Employee> Employees { get; set; }
     }
 }
+// :)
