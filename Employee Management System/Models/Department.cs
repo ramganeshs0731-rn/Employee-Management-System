@@ -15,3 +15,4 @@ namespace Employee_Management_System.Models
         public ICollection<Employee>? Employees { get; set; }
     }
 }
+// close
